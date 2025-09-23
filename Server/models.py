@@ -29,6 +29,9 @@ bcrypt = Bcrypt(app)
 #Creating User model
 class User(db.Model):
     __tablename__="users"
+    serialize_rules = ('-trips.user', '-group_memberships.user',)
+
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
@@ -46,6 +49,9 @@ class User(db.Model):
 #Creating Trip model
 class Trip(db.Model):
     __tablename__="trips"
+    serialize_rules = ('-user.trips',)
+
+
     id = db.Column(db.Integer, primary_key=True)
     destination = db.Column(db.String(100), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
@@ -62,6 +68,8 @@ class Trip(db.Model):
 #creating travelgroup model
 class TravelGroup(db.Model, SerializerMixin):
     __tablename__ = 'travelgroups'
+    serialize_rules = ('-group_memberships.travelgroup',)
+
 
     id = db.Column(db.Integer, primary_key=True)
     group_name = db.Column(db.String(100), nullable=False)
@@ -77,6 +85,7 @@ class TravelGroup(db.Model, SerializerMixin):
 #creating an association object
 class GroupMembership(db.Model, SerializerMixin):
     __tablename__ = 'group_memberships'
+    serialize_rules = ('-user.group_memberships', '-travelgroup.group_memberships',)
     
     id = db.Column(db.Integer, primary_key=True)
     is_active = db.Column(db.Boolean, default=True)
