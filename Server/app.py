@@ -21,3 +21,10 @@ def start():
     }
     response=make_response(message, 200)
     return response
+
+
+
+if __name__ == '__main__':
+    app.run(port=5555, debug=True)
+
+# kill -9 $(lsof -t -i:5555)
