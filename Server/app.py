@@ -38,8 +38,8 @@ class UserResource(Resource):
             email=data['email'],
             role=data['role']
         )
-        new_user.password_hash = data['password'] 
-        
+        new_user.password = data['password'] 
+
         db.session.add(new_user)
         db.session.commit()
         

@@ -27,7 +27,7 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 
 #Creating User model
-class User(db.Model):
+class User(db.Model, SerializerMixin):
     __tablename__="users"
     serialize_rules = ('-trips.user', '-group_memberships.user',)
 
@@ -63,10 +63,10 @@ class User(db.Model):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
 
     def __repr__(self):
-        f'<{self.id} {self.name} {self.email}>'
+        return f'<{self.id} {self.name} {self.email}>'
 
 #Creating Trip model
-class Trip(db.Model):
+class Trip(db.Model, SerializerMixin):
     __tablename__="trips"
     serialize_rules = ('-user.trips',)
 
@@ -79,7 +79,6 @@ class Trip(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='trips')
 
-    travelgroups = db.relationship('TravelGroup', back_populates='trip', cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Trip {self.destination}>"
@@ -93,9 +92,8 @@ class TravelGroup(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     group_name = db.Column(db.String(100), nullable=False)
     max_members = db.Column(db.Integer)
-    trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable=False)
 
-    trip = db.relationship('Trip', back_populates='travelgroups')
+    
     group_memberships = db.relationship('GroupMembership', back_populates='travelgroup')
 
 
@@ -125,6 +123,27 @@ class GroupMembership(db.Model, SerializerMixin):
         return f"<GroupMembership {self.id}>"
 
 
+# --- Example Routes ---
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    return jsonify([u.to_dict() for u in users])
+
+@app.route('/users', methods=['POST'])
+def create_user():
+    data = request.json
+    user = User(
+        name=data['name'],
+        email=data['email'],
+        role=data['role']
+    )
+    user.password = data['password']
+    db.session.add(user)
+    db.session.commit()
+    return jsonify(user.to_dict()), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 

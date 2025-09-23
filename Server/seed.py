@@ -52,7 +52,6 @@ with app.app_context():
         travelgroup = TravelGroup(
             group_name=fake.city() + " Crew",
             max_members=rc([5, 10, 15]),
-            trip_id=rc(trips).id  # assign a trip
         )
         travelgroups.append(travelgroup)
 
