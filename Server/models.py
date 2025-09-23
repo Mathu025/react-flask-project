@@ -36,6 +36,8 @@ class User(db.Model):
     profile_pic = db.Column(db.String)
     role = db.Column(db.String, nullable=False)
 
+    trips = db.relationship('Trip', back_populates='user')
+
     def __repr__(self):
         f'<{self.id} {self.name} {self.email}>'
 
@@ -50,19 +52,24 @@ class Trip(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='trips')
 
+    travelgroups = db.relationship('TravelGroup', back_populates='trip', cascade="all, delete-orphan")
+
     def __repr__(self):
         return f"<Trip {self.destination}>"
 
 #creating travelgroup model
 class TravelGroup(db.Model, SerializerMixin):
     __tablename__ = 'travelgroups'
-    serialize_rules = ('-group_memberships.travelgroup',)
 
     id = db.Column(db.Integer, primary_key=True)
     group_name = db.Column(db.String(100), nullable=False)
     max_members = db.Column(db.Integer)
+    trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable=False)
 
-    
+    trip = db.relationship('Trip', back_populates='travelgroups')
+
+    def __repr__(self):
+        return f"<TravelGroup {self.group_name}>"
 
 
 
