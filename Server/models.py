@@ -43,6 +43,25 @@ class User(db.Model):
     group_memberships = db.relationship('GroupMembership', back_populates='user')
 
 
+    @validates('email')
+    def validate_email(self, key, address):
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", address):
+            raise ValueError(f"Invalid email address: {address}")
+        return address
+
+    # Authenticating password
+    @property
+    def password(self):
+        raise AttributeError("Password is write-only!")
+
+    @password.setter
+    def password_hash(self, password):
+        pw_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
+        self._password_hash = pw_hash.decode('utf-8')
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+
     def __repr__(self):
         f'<{self.id} {self.name} {self.email}>'
 
@@ -79,6 +98,12 @@ class TravelGroup(db.Model, SerializerMixin):
     trip = db.relationship('Trip', back_populates='travelgroups')
     group_memberships = db.relationship('GroupMembership', back_populates='travelgroup')
 
+
+    @validates('max_members')
+    def validate_max_members(self, key, value):
+        if value is not None and (not isinstance(value, int) or value < 1):
+            raise ValueError("max_members must be a positive integer")
+        return value
     def __repr__(self):
         return f"<TravelGroup {self.group_name}>"
     
