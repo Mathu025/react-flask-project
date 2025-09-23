@@ -26,4 +26,45 @@ db = SQLAlchemy(app, metadata=metadata)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 
+#Creating User model
+class User(db.Model):
+    __tablename__="users"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    _password_hash = db.Column('password', db.String, nullable=False)
+    profile_pic = db.Column(db.String)
+    role = db.Column(db.String, nullable=False)
+
+    def __repr__(self):
+        f'<{self.id} {self.name} {self.email}>'
+
+#Creating Trip model
+class Trip(db.Model):
+    __tablename__="trips"
+    id = db.Column(db.Integer, primary_key=True)
+    destination = db.Column(db.String(100), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    details = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', back_populates='trips')
+
+    def __repr__(self):
+        return f"<Trip {self.destination}>"
+
+#creating travelgroup model
+class TravelGroup(db.Model, SerializerMixin):
+    __tablename__ = 'travelgroups'
+    serialize_rules = ('-group_memberships.travelgroup',)
+
+    id = db.Column(db.Integer, primary_key=True)
+    group_name = db.Column(db.String(100), nullable=False)
+    max_members = db.Column(db.Integer)
+
+    
+
+
+
+
 
