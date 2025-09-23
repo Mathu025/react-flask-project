@@ -6,3 +6,4 @@ function MyGroupsPage() {
         </div>
     );
 }
+export default MyGroupsPage;

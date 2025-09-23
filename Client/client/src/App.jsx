@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import NavBar from "./Components/NavBar";
-import Homepage from "./Pages/HomePage";
+import HomePage from "./Pages/HomePage";
 import TripsPage from "./Pages/TripsPage";
 import MyGroupsPage from "./Pages/MyGroupsPage";
 
@@ -10,7 +10,7 @@ function App() {
       <NavBar />
       <div className="container">
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/trips" element={<TripsPage />} />
         <Route path="/my-groups" element={<MyGroupsPage />} />
         <Route path="*" element={<h2>404 Not Found</h2>} />
