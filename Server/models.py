@@ -77,7 +77,7 @@ class Trip(db.Model):
     end_date = db.Column(db.Date, nullable=False)
     details = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    usezr = db.relationship('User', back_populates='trips')
+    user = db.relationship('User', back_populates='trips')
 
     travelgroups = db.relationship('TravelGroup', back_populates='trip', cascade="all, delete-orphan")
 
@@ -104,6 +104,7 @@ class TravelGroup(db.Model, SerializerMixin):
         if value is not None and (not isinstance(value, int) or value < 1):
             raise ValueError("max_members must be a positive integer")
         return value
+    
     def __repr__(self):
         return f"<TravelGroup {self.group_name}>"
     
@@ -122,6 +123,8 @@ class GroupMembership(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"<GroupMembership {self.id}>"
+
+
 
 
 
