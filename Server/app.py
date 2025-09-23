@@ -137,6 +137,64 @@ class TripResourceById(Resource):
         response=make_response(response_body, 204)
         return response
 
+class TravelGroupResource(Resource):
+    def get(self):
+        travelgroups = [tg.to_dict() for tg in TravelGroup.query.all()]
+        response = make_response(travelgroups, 200)
+        return response
+
+    def post(self):
+        data = request.get_json()
+        new_travelgroup = TravelGroup(
+            group_name=data.get('group_name'),
+            max_members=data.get('max_members')
+        )
+
+        db.session.add(new_travelgroup)
+        db.session.commit()
+
+        new_tg_dict = new_travelgroup.to_dict()
+        response = make_response(new_tg_dict, 201)
+        return response
+
+
+class TravelGroupResourceById(Resource):
+    def get(self, id):
+        travelgroup = TravelGroup.query.get(id)
+        if not travelgroup:
+            return {"error": "TravelGroup not found"}, 404
+
+        tg_dict = travelgroup.to_dict()
+        response = make_response(tg_dict, 200)
+        return response
+
+    def patch(self, id):
+        travelgroup = TravelGroup.query.get(id)
+        if not travelgroup:
+            return {"error": "TravelGroup not found"}, 404
+
+        data = request.get_json()
+        if 'group_name' in data:
+            travelgroup.group_name = data['group_name']
+        if 'max_members' in data:
+            travelgroup.max_members = data['max_members']
+
+        db.session.commit()
+        tg_dict = travelgroup.to_dict()
+        response = make_response(tg_dict, 200)
+        return response
+
+    def delete(self, id):
+        travelgroup = TravelGroup.query.get(id)
+        if not travelgroup:
+            return {"error": "TravelGroup not found"}, 404
+
+        db.session.delete(travelgroup)
+        db.session.commit()
+
+        response_body = {"message": "TravelGroup deleted successfully"}
+        response = make_response(response_body, 200)
+        return response
 
 
 
@@ -145,6 +203,9 @@ api.add_resource(UserResource, '/users')
 api.add_resource(UserResourceById, '/users/<int:id>')
 api.add_resource(TripResource, '/trips')
 api.add_resource(TripResourceById, '/trips/<int:id>')
+api.add_resource(TravelGroupResource, '/travelgroups')
+api.add_resource(TravelGroupResourceById, '/travelgroups/<int:id>')
+
 
 
 
