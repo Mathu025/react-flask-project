@@ -3,8 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from sqlalchemy import MetaData
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, relationship
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.ext.associationproxy import association_proxy
 import re
 
 
@@ -39,10 +40,11 @@ class User(db.Model, SerializerMixin):
     profile_pic = db.Column(db.String)
     role = db.Column(db.String, nullable=False)
 
-    trips = db.relationship('Trip', back_populates='user')
+    trips = db.relationship('Trip', back_populates='user', cascade='all, delete-orphan')
     group_memberships = db.relationship('GroupMembership', back_populates='user')
 
-
+    travelgroups=association_proxy("group_memberships", "travelgroup", 
+                                   creator=lambda travelgroup_obj: GroupMembership(travelgroup=travelgroup_obj))
     @validates('email')
     def validate_email(self, key, address):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", address):
@@ -99,6 +101,8 @@ class TravelGroup(db.Model, SerializerMixin):
     
     group_memberships = db.relationship('GroupMembership', back_populates='travelgroup')
 
+    users=association_proxy("group_memberships", "user", 
+                                   creator=lambda user_obj: GroupMembership(user=user_obj))
 
     @validates('max_members')
     def validate_max_members(self, key, value):

@@ -80,11 +80,73 @@ class UserResourceById(Resource):
         response=make_response(response_body, 204)
         return response
 
+class TripResource(Resource):
+    def get(self):
+        trips=[trip.to_dict() for trip in Trip.query.all()]
+        response=make_response(trips, 200)
+        return response
+
+    def post(self):
+        data = request.get_json()
+        new_trip = Trip(
+            destination=data['destination'],
+            start_date=data['start_date'],
+            end_date=data['end_date'],
+            details=data['details']
+        )
+
+
+        db.session.add(new_trip)
+        db.session.commit()
+        
+        new_trip_dict=new_trip.to_dict()
+        response=make_response(new_trip_dict, 201)
+        return response
+class TripResourceById(Resource):
+    def get(self, id):
+        trip = Trip.query.filter(Trip.id==id).first()
+        trip_dict=trip.to_dict()
+        response=make_response(trip_dict, 200)
+        return response
+
+    def patch(self, id):
+        trip = Trip.query.filter(Trip.id==id).first()
+        data = request.json
+        if 'destination' in data:
+            trip.destination = data['destination']
+        if 'start_date' in data:
+            trip.start_date = data['start_date']
+        if 'end_date' in data:
+            trip.end_date = data['end_date']
+        if 'details' in data:
+            trip.details = data['details']
+
+        db.session.commit()
+        trip_dict= trip.to_dict()
+        response=make_response(trip_dict, 200)
+        return response
+
+    def delete(self, id):
+        trip = Trip.query.filter(Trip.id==id).first()
+        db.session.delete(trip)
+        db.session.commit()
+        response_body={
+            "message": "Trip deleted successfully"
+        }
+            
+        response=make_response(response_body, 204)
+        return response
+
+
 
 
 api.add_resource(Start, '/welcome')
 api.add_resource(UserResource, '/users')
 api.add_resource(UserResourceById, '/users/<int:id>')
+api.add_resource(TripResource, '/trips')
+api.add_resource(TripResourceById, '/trips/<int:id>')
+
+
 
 
 
