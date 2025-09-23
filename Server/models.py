@@ -77,8 +77,10 @@ class Trip(db.Model, SerializerMixin):
     end_date = db.Column(db.Date, nullable=False)
     details = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    #adding
+    
     user = db.relationship('User', back_populates='trips')
-
+    
 
     def __repr__(self):
         return f"<Trip {self.destination}>"
@@ -93,6 +95,7 @@ class TravelGroup(db.Model, SerializerMixin):
     group_name = db.Column(db.String(100), nullable=False)
     max_members = db.Column(db.Integer)
 
+    #Add
     
     group_memberships = db.relationship('GroupMembership', back_populates='travelgroup')
 

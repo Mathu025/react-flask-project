@@ -27,11 +27,14 @@ with app.app_context():
             email=fake.unique.email(),
             role=rc(["organizer", "traveler"])
         )
-        user.password_hash = "password123"
+        user.password_hash = "password"
         users.append(user)
 
     db.session.add_all(users)
     db.session.commit()
+
+
+    
 
     #Creating sample trips
     for _ in range(10):
@@ -52,11 +55,13 @@ with app.app_context():
         travelgroup = TravelGroup(
             group_name=fake.city() + " Crew",
             max_members=rc([5, 10, 15]),
+
         )
         travelgroups.append(travelgroup)
 
-    db.session.add_all(travelgroups)
-    db.session.commit()
+        db.session.add_all(travelgroups)
+        db.session.commit()
+    
 
     #Creating sample group memberships
     for tg in travelgroups:
