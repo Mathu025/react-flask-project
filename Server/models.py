@@ -37,6 +37,8 @@ class User(db.Model):
     role = db.Column(db.String, nullable=False)
 
     trips = db.relationship('Trip', back_populates='user')
+    group_memberships = db.relationship('GroupMembership', back_populates='user')
+
 
     def __repr__(self):
         f'<{self.id} {self.name} {self.email}>'
@@ -50,7 +52,7 @@ class Trip(db.Model):
     end_date = db.Column(db.Date, nullable=False)
     details = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('User', back_populates='trips')
+    usezr = db.relationship('User', back_populates='trips')
 
     travelgroups = db.relationship('TravelGroup', back_populates='trip', cascade="all, delete-orphan")
 
@@ -67,9 +69,26 @@ class TravelGroup(db.Model, SerializerMixin):
     trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable=False)
 
     trip = db.relationship('Trip', back_populates='travelgroups')
+    group_memberships = db.relationship('GroupMembership', back_populates='travelgroup')
 
     def __repr__(self):
         return f"<TravelGroup {self.group_name}>"
+    
+#creating an association object
+class GroupMembership(db.Model, SerializerMixin):
+    __tablename__ = 'group_memberships'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    is_active = db.Column(db.Boolean, default=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey('travelgroups.id'), nullable=False)
+
+    user = db.relationship('User', back_populates='group_memberships')
+    travelgroup = db.relationship('TravelGroup', back_populates='group_memberships')
+
+    def __repr__(self):
+        return f"<GroupMembership {self.id}>"
+
 
 
 
