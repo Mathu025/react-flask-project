@@ -46,10 +46,45 @@ class UserResource(Resource):
         new_user_dict=new_user.to_dict()
         response=make_response(new_user_dict, 201)
         return response
+class UserResourceById(Resource):
+    def get(self, id):
+        user = User.query.filter(User.id==id).first()
+        user_dict=user.to_dict()
+        response=make_response(user_dict, 200)
+        return response
+
+    def patch(self, id):
+        user = User.query.filter(User.id==id).first()
+        data = request.json
+        if 'name' in data:
+            user.name = data['name']
+        if 'email' in data:
+            user.email = data['email']
+        if 'role' in data:
+            user.role = data['role']
+        if 'password' in data:
+            user.password_hash = data['password']
+        db.session.commit()
+        user_dict= user.to_dict()
+        response=make_response(user_dict, 200)
+        return response
+
+    def delete(self, id):
+        user = User.query.filter(User.id==id).first()
+        db.session.delete(user)
+        db.session.commit()
+        response_body={
+            "message": "User deleted successfully"
+        }
+            
+        response=make_response(response_body, 204)
+        return response
+
 
 
 api.add_resource(Start, '/welcome')
 api.add_resource(UserResource, '/users')
+api.add_resource(UserResourceById, '/users/<int:id>')
 
 
 
