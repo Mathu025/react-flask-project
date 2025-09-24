@@ -1,11 +1,22 @@
-function TripCard({ trip }) {
-    return (
-        <div className="trip-card">
-            <h3>{trip.destination}</h3>
-            <p>{trip.description}</p>
-            <p><strong>Dates:</strong> {trip.start_date} to {trip.end_date}</p>
-        </div>
-    );
+export default function TripsList({ trips }) {
+  return (
+    <div>
+      <h2>All Trips</h2>
+      {trips.length === 0 ? (
+        <p>No trips available</p>
+      ) : (
+        <ul>
+          {trips.map((trip) => (
+            <li key={trip.id}>
+              <strong>{trip.destination}</strong> <br />
+              {trip.details} <br />
+              From: {trip.start_date} To: {trip.end_date} <br />
+              By User ID: {trip.user_id}
+              <hr />
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }
-
-export default TripCard;
