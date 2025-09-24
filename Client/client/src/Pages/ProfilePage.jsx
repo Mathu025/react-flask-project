@@ -17,7 +17,8 @@ const ProfilePage = () => {
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
-      await createUser(values);
+        const userData = { ...values, role: "user" };
+      await createUser(userData);
       setMessage("User created successfully!");
       resetForm();
     } catch (err) {
