@@ -1,8 +1,7 @@
-// src/api.js
+
 
 const API_URL = "http://127.0.0.1:5555";
 
-// --- TRIPS ---
 export async function fetchTrips() {
     const res = await fetch(`${API_URL}/trips`);
     if (!res.ok) throw new Error("Failed to fetch trips");
@@ -27,7 +26,6 @@ export async function createTrip(tripData) {
     console.log("Response status:", res.status);
     console.log("Response headers:", Object.fromEntries(res.headers.entries()));
     
-    // Always try to get the response body for debugging
     const responseText = await res.text();
     console.log("Raw response:", responseText);
     
@@ -35,11 +33,9 @@ export async function createTrip(tripData) {
         let errorMessage = `HTTP ${res.status}: `;
         
         try {
-            // Try to parse as JSON first
             const errorData = JSON.parse(responseText);
             errorMessage += errorData.message || errorData.error || JSON.stringify(errorData);
         } catch (e) {
-            // If not JSON, use the text
             errorMessage += responseText || res.statusText;
         }
         
@@ -47,7 +43,6 @@ export async function createTrip(tripData) {
         throw new Error(errorMessage);
     }
     
-    // Parse the successful response
     try {
         return JSON.parse(responseText);
     } catch (e) {
@@ -126,3 +121,41 @@ export async function deleteMembership(id) {
     return res.json();
 }
 
+// --- AUTH ---
+export async function signup(userData) {
+  const res = await fetch(`${API_URL}/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userData),
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(errText || "Failed to sign up");
+  }
+  return res.json();
+}
+
+export async function login(credentials) {
+  const res = await fetch(`${API_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(errText || "Failed to login");
+  }
+  return res.json();
+}
+
+export async function fetchCurrentUser(tokenOrNothing) {
+  const res = await fetch(`${API_URL}/me`, {
+    headers: tokenOrNothing
+      ? { Authorization: `Bearer ${tokenOrNothing}` }
+      : undefined,
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch current user");
+  }
+  return res.json();
+}
