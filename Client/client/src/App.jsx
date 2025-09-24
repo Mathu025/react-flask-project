@@ -6,6 +6,7 @@ import TripDetails from "./Pages/TripDetails";
 import EditTrip from "./Pages/EditTrip";
 import MyGroupsPage from "./Pages/MyGroupsPage";
 import UsersPage from "./Pages/UsersPage";
+import ProfilePage from "./Pages/ProfilePage";  
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/trips/:id/edit" element={<EditTrip />} />
           <Route path="/my-groups" element={<MyGroupsPage />} />
           <Route path="/users" element={<UsersPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
       </div>

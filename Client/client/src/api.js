@@ -125,3 +125,4 @@ export async function deleteMembership(id) {
     if (!res.ok) throw new Error("Failed to leave group");
     return res.json();
 }
+
