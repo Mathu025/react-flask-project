@@ -9,10 +9,9 @@ from sqlalchemy.ext.associationproxy import association_proxy
 import re
 
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///travelbuddy.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+db = SQLAlchemy()
+migrate = Migrate()
+bcrypt = Bcrypt()
 
 convention = {
     "ix": "ix_%(column_0_label)s",
@@ -23,9 +22,7 @@ convention = {
 }
 metadata = MetaData(naming_convention=convention)
 
-db = SQLAlchemy(app, metadata=metadata)
-migrate = Migrate(app, db)
-bcrypt = Bcrypt(app)
+
 
 #Creating User model
 class User(db.Model, SerializerMixin):
@@ -57,7 +54,7 @@ class User(db.Model, SerializerMixin):
         raise AttributeError("Password is write-only!")
 
     @password.setter
-    def password_hash(self, password):
+    def password(self, password):
         pw_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
         self._password_hash = pw_hash.decode('utf-8')
 
@@ -133,9 +130,6 @@ class GroupMembership(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"<GroupMembership {self.id}>"
-
-
-# --- Example Routes ---
 
 
 

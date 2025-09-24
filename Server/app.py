@@ -9,7 +9,7 @@ from models import db, User, Trip,TravelGroup, GroupMembership
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///travelbuddy.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config["JWT_SECRET_KEY"]="super_secret"
+app.config["SECRET_KEY"]="super_secret"
 app.json.compact = False
 
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
@@ -88,9 +88,7 @@ class UserResourceById(Resource):
     def get(self, id):
         user = User.query.filter(User.id==id).first()
         if not user:
-            return {
-                "error": "User not found"
-            }, 404
+            return {"error": "User not found"}, 404
         user_dict=user.to_dict()
         response=make_response(user_dict, 200)
         return response
@@ -98,11 +96,9 @@ class UserResourceById(Resource):
     def patch(self, id):
         user = User.query.filter(User.id==id).first()
         if not user:
-            return {
-                "error": "User not found"
-            }, 404
+            return {"error": "User not found"}, 404
 
-        data = request.json
+        data = request.get_json()
         if 'name' in data:
             user.name = data['name']
         if 'email' in data:
@@ -118,6 +114,9 @@ class UserResourceById(Resource):
 
     def delete(self, id):
         user = User.query.filter(User.id==id).first()
+        if not user:
+            return {"error": "User not found"}, 404
+
         
         db.session.delete(user)
         db.session.commit()
@@ -140,7 +139,8 @@ class TripResource(Resource):
             destination=data['destination'],
             start_date=data['start_date'],
             end_date=data['end_date'],
-            details=data['details']
+            details=data['details'],
+            user_id=data.get('user_id')
         )
 
 
@@ -154,9 +154,7 @@ class TripResourceById(Resource):
     def get(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
         if not trip:
-            return {
-                'error': 'Trip not found'
-            }
+            return {'error': 'Trip not found'}, 404
         trip_dict=trip.to_dict()
         response=make_response(trip_dict, 200)
         return response
@@ -164,9 +162,7 @@ class TripResourceById(Resource):
     def patch(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
         if not trip:
-            return {
-                'error': 'Trip not found'
-            }
+            return {'error': 'Trip not found'}, 404
         data = request.json
         if 'destination' in data:
             trip.destination = data['destination']
@@ -185,9 +181,7 @@ class TripResourceById(Resource):
     def delete(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
         if not trip:
-            return {
-                'error': 'Trip not found'
-            }
+            return {'error': 'Trip not found'}, 404
         db.session.delete(trip)
         db.session.commit()
         response_body={
@@ -208,7 +202,9 @@ class TravelGroupResource(Resource):
         data = request.get_json()
         new_travelgroup = TravelGroup(
             group_name=data.get('group_name'),
-            max_members=data.get('max_members')
+            max_members=data.get('max_members'),
+            trip_id=data.get('trip_id') 
+
         )
 
         db.session.add(new_travelgroup)
@@ -239,6 +235,8 @@ class TravelGroupResourceById(Resource):
             travelgroup.group_name = data['group_name']
         if 'max_members' in data:
             travelgroup.max_members = data['max_members']
+        if 'trip_id' in data:  
+            travelgroup.trip_id = data['trip_id']
 
         db.session.commit()
         tg_dict = travelgroup.to_dict()
