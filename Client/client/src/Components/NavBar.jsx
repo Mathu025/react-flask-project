@@ -8,6 +8,7 @@ function NavBar() {
                 <Link to="/">Home</Link>
                 <Link to="/trips">Trips</Link>
                 <Link to="/my-groups">My Groups</Link>
+                <Link to="/users">Users</Link>
             </div>
         </nav>
     );
