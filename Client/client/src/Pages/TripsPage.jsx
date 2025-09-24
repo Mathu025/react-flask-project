@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import { fetchTrips } from "../api";
+import TripCard from "../Components/TripCard";  
 
 function TripsPage() {
     const [trips, setTrips] = useState([]);
@@ -29,17 +30,11 @@ function TripsPage() {
             {trips.length === 0 ? (
                 <p>No trips available.</p>
             ) : (
-                <ul>
-                    {trips.map(trip => (
-                        <li key={trip.id}>
-                            <h3>{trip.destination}</h3>
-                            <p>{trip.description}</p>
-                            <p><strong>Dates:</strong> {trip.start_date} to {trip.end_date}</p>
-                        </li>
+                    trips.map(trip => (
+                        <TripCard key={trip.id} trip={trip} /> )
                     ))}
-                </ul>
-            )}
-        </div>
+        </div>      
+                    
     );
 }
 
