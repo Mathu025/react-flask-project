@@ -136,26 +136,6 @@ class GroupMembership(db.Model, SerializerMixin):
 
 
 # --- Example Routes ---
-@app.route('/users', methods=['GET'])
-def get_users():
-    users = User.query.all()
-    return jsonify([u.to_dict() for u in users])
-
-@app.route('/users', methods=['POST'])
-def create_user():
-    data = request.json
-    user = User(
-        name=data['name'],
-        email=data['email'],
-        role=data['role']
-    )
-    user.password = data['password']
-    db.session.add(user)
-    db.session.commit()
-    return jsonify(user.to_dict()), 201
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
 
 
