@@ -106,7 +106,7 @@ class UserResourceById(Resource):
         if 'role' in data:
             user.role = data['role']
         if 'password' in data:
-            user.password_hash = data['password']
+            user.password = data['password']
         db.session.commit()
         user_dict= user.to_dict()
         response=make_response(user_dict, 200)
@@ -264,8 +264,10 @@ class GroupMembershipResource(Resource):
 
         data = request.get_json()
         new_groupmembership = GroupMembership(
-            is_active=data.get('is_active')
-        )
+        is_active=data.get('is_active', True),
+        user_id=data['user_id'],
+        group_id=data['group_id']  
+    )
 
         db.session.add(new_groupmembership)
         db.session.commit()
