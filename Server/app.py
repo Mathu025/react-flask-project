@@ -87,12 +87,21 @@ class UserResource(Resource):
 class UserResourceById(Resource):
     def get(self, id):
         user = User.query.filter(User.id==id).first()
+        if not user:
+            return {
+                "error": "User not found"
+            }, 404
         user_dict=user.to_dict()
         response=make_response(user_dict, 200)
         return response
 
     def patch(self, id):
         user = User.query.filter(User.id==id).first()
+        if not user:
+            return {
+                "error": "User not found"
+            }, 404
+
         data = request.json
         if 'name' in data:
             user.name = data['name']
@@ -109,6 +118,7 @@ class UserResourceById(Resource):
 
     def delete(self, id):
         user = User.query.filter(User.id==id).first()
+        
         db.session.delete(user)
         db.session.commit()
         response_body={
@@ -143,12 +153,20 @@ class TripResource(Resource):
 class TripResourceById(Resource):
     def get(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
+        if not trip:
+            return {
+                'error': 'Trip not found'
+            }
         trip_dict=trip.to_dict()
         response=make_response(trip_dict, 200)
         return response
 
     def patch(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
+        if not trip:
+            return {
+                'error': 'Trip not found'
+            }
         data = request.json
         if 'destination' in data:
             trip.destination = data['destination']
@@ -166,6 +184,10 @@ class TripResourceById(Resource):
 
     def delete(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
+        if not trip:
+            return {
+                'error': 'Trip not found'
+            }
         db.session.delete(trip)
         db.session.commit()
         response_body={
