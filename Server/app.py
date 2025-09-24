@@ -23,8 +23,40 @@ class Start(Resource):
         response=make_response(response_body, 200)
         return response
     
+class Signup(Resource):
+    def post(self):
+        data=request.get_json()
 
+        new_user = User(
+             name=data['name'],
+            email=data['email'],
+            password=data['password'],
+            role=data.get('role', 'user')
+        )
+        db.session.add(new_user)
+        db.session.commit()
 
+        session['user_id'] = new_user.id
+        response = make_response(new_user.to_dict(), 201)
+        return response
+class Login(Resource):
+    def post(self):
+        data=request.get_json()
+        username=data['username']
+        password=data['password']
+
+        user=User.query.filter_by(name=username).first()
+        if user and user.authenticate(password):
+            session['user_id']=user.id
+            return user.to_dict(), 200
+        return {'error': "Invalid username or password"}, 401
+
+class Logout(Resource):
+    def post(self):
+            
+            session.pop('user_id', None)
+            return make_response({"message": "Logged out successfully"}, 200)
+        
 class UserResource(Resource):
     def get(self):
         users=[user.to_dict() for user in User.query.all()]
@@ -137,6 +169,7 @@ class TripResourceById(Resource):
         response=make_response(response_body, 204)
         return response
 
+
 class TravelGroupResource(Resource):
     def get(self):
         travelgroups = [tg.to_dict() for tg in TravelGroup.query.all()]
@@ -196,6 +229,43 @@ class TravelGroupResourceById(Resource):
         response = make_response(response_body, 200)
         return response
 
+class GroupMembershipResource(Resource):
+    def get(self):
+        groupmemberships=[groupmembership.to_dict() for groupmembership in GroupMembership.query.all()]
+        response=make_response(groupmemberships, 200)
+        return response
+    def post(self):
+
+        data = request.get_json()
+        new_groupmembership = GroupMembership(
+            is_active=data.get('is_active')
+        )
+
+        db.session.add(new_groupmembership)
+        db.session.commit()
+
+        new_groupmembership_dict = new_groupmembership.to_dict()
+        response = make_response(new_groupmembership_dict, 201)
+        return response
+class GroupMembershipById(Resource):
+    def get(self, id):
+        gm = GroupMembership.query.filter_by(id=id).first()
+        if not gm:
+            return {"error": "Group membership not found"}, 404
+
+        return make_response(gm.to_dict(), 200)
+
+    def patch(self, id):
+        gm = GroupMembership.query.filter_by(id=id).first()
+        if not gm:
+            return {"error": "Group membership not found"}, 404
+
+        data = request.get_json()
+        if 'is_active' in data:
+            gm.is_active = data['is_active']
+
+        db.session.commit()
+        return make_response(gm.to_dict(), 200)
 
 
 api.add_resource(Start, '/welcome')
@@ -205,6 +275,11 @@ api.add_resource(TripResource, '/trips')
 api.add_resource(TripResourceById, '/trips/<int:id>')
 api.add_resource(TravelGroupResource, '/travelgroups')
 api.add_resource(TravelGroupResourceById, '/travelgroups/<int:id>')
+api.add_resource(GroupMembershipResource, '/groupmemberships')
+api.add_resource(GroupMembershipById, '/groupmemberships/<int:id>')
+api.add_resource(Signup, '/signup')
+api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
 
 
 
