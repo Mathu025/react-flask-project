@@ -7,6 +7,7 @@ import EditTrip from "./Pages/EditTrip";
 import MyGroupsPage from "./Pages/MyGroupsPage";
 import UsersPage from "./Pages/UsersPage";
 import ProfilePage from "./Pages/ProfilePage";  
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   return (
@@ -15,11 +16,11 @@ function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/trips" element={<TripsPage />} />
-          <Route path="/trips/:id" element={<TripDetails />} />
-          <Route path="/trips/:id/edit" element={<EditTrip />} />
-          <Route path="/my-groups" element={<MyGroupsPage />} />
-          <Route path="/users" element={<UsersPage />} />
+          <Route path="/trips" element={<ProtectedRoute> <TripsPage /> </ProtectedRoute>} />
+          <Route path="/trips/:id" element={<ProtectedRoute> <TripDetails /> </ProtectedRoute>} />
+          <Route path="/trips/:id/edit" element={<ProtectedRoute><EditTrip /> </ProtectedRoute>} />
+          <Route path="/my-groups" element={<ProtectedRoute> <MyGroupsPage /> </ProtectedRoute>} />
+          <Route path="/users" element={<ProtectedRoute><UsersPage /> </ProtectedRoute>} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
