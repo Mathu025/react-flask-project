@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, make_response, session
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
+from flask_cors import CORS
 
 from models import db, User, Trip,TravelGroup, GroupMembership
 
@@ -8,7 +9,12 @@ from models import db, User, Trip,TravelGroup, GroupMembership
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///travelbuddy.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["JWT_SECRET_KEY"]="super_secret"
 app.json.compact = False
+
+CORS(app, resources={r"/*": {"origins": "http://localhost:5175"}})
+
+
 
 db.init_app(app)
 migrate = Migrate(app, db)

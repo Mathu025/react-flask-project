@@ -30,7 +30,7 @@ bcrypt = Bcrypt(app)
 #Creating User model
 class User(db.Model, SerializerMixin):
     __tablename__="users"
-    serialize_rules = ('-trips.user', '-group_memberships.user',)
+    serialize_rules = ('-trips.user', '-group_memberships', '-password_hash')
 
 
     id = db.Column(db.Integer, primary_key=True)
@@ -70,7 +70,9 @@ class User(db.Model, SerializerMixin):
 #Creating Trip model
 class Trip(db.Model, SerializerMixin):
     __tablename__="trips"
-    serialize_rules = ('-user.trips',)
+    serialize_rules = ('-user.trips', '-travelgroups', '-user.group_memberships')
+
+    
 
 
     id = db.Column(db.Integer, primary_key=True)
@@ -82,7 +84,7 @@ class Trip(db.Model, SerializerMixin):
     #adding
     
     user = db.relationship('User', back_populates='trips')
-    
+    travelgroups=db.relationship('TravelGroup', back_populates="trip", cascade='all, delete-orphan')
 
     def __repr__(self):
         return f"<Trip {self.destination}>"
@@ -90,7 +92,9 @@ class Trip(db.Model, SerializerMixin):
 #creating travelgroup model
 class TravelGroup(db.Model, SerializerMixin):
     __tablename__ = 'travelgroups'
-    serialize_rules = ('-group_memberships.travelgroup',)
+    serialize_rules = ( '-trip.travelgroups', '-group_memberships', '-users')
+
+    
 
 
     id = db.Column(db.Integer, primary_key=True)
@@ -98,7 +102,8 @@ class TravelGroup(db.Model, SerializerMixin):
     max_members = db.Column(db.Integer)
 
     #Add
-    
+    trip_id=db.Column(db.Integer, db.ForeignKey('trips.id'))
+    trip=db.relationship('Trip', back_populates="travelgroups")
     group_memberships = db.relationship('GroupMembership', back_populates='travelgroup')
 
     users=association_proxy("group_memberships", "user", 
