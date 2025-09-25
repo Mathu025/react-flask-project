@@ -48,21 +48,22 @@ class Signup(Resource):
 class Login(Resource):
     def post(self):
         data=request.get_json()
-        username=data['username']
+        email=data['email']
         password=data['password']
 
-        user=User.query.filter_by(name=username).first()
+        user=User.query.filter_by(email=email).first()
         if user and user.authenticate(password):
             session['user_id']=user.id
             return user.to_dict(), 200
-        return {'error': "Invalid username or password"}, 401
+        return {'error': "Invalid email or password"}, 401
 
 class Logout(Resource):
     def post(self):
             
             session.pop('user_id', None)
             return make_response({"message": "Logged out successfully"}, 200)
-        
+ 
+
 class UserResource(Resource):
     def get(self):
         users=[user.to_dict() for user in User.query.all()]
