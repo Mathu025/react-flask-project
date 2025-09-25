@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, jsonify, request, make_response, session
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
@@ -168,9 +169,10 @@ class TripResourceById(Resource):
         if 'destination' in data:
             trip.destination = data['destination']
         if 'start_date' in data:
-            trip.start_date = data['start_date']
+            trip.start_date = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
         if 'end_date' in data:
-            trip.end_date = data['end_date']
+            trip.end_date = datetime.strptime(data["end_date"], "%Y-%m-%d").date()
+
         if 'details' in data:
             trip.details = data['details']
 
