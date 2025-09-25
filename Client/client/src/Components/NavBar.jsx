@@ -10,7 +10,7 @@ function NavBar() {
                 <NavLink to="/trips">Trips</NavLink>
                 <NavLink to="/my-groups">My Groups</NavLink>
                 <NavLink to="/users">Users</NavLink>
-                <NavLink to="/signup">Profile</NavLink>
+                <NavLink to="/signup">SignUp</NavLink>
                 <NavLink to="/login">Login</NavLink>
             </div>
         </nav>

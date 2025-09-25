@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const LoginSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
+  username: Yup.string().required("Required"),
   password: Yup.string().required("Required"),
 });
 
@@ -17,14 +17,14 @@ export default function Login() {
     <div>
       <h2>Login</h2>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ username: "", password: "" }}
         validationSchema={LoginSchema}
         onSubmit={async (values, { setSubmitting, setStatus }) => {
           setStatus(null);
           try {
             await login(values);
             setSubmitting(false);
-            navigate("/"); // redirect after login
+            navigate("/"); 
           } catch (err) {
             setStatus(err.message || "Login failed");
             setSubmitting(false);
@@ -34,9 +34,9 @@ export default function Login() {
         {({ isSubmitting, status }) => (
           <Form>
             <div>
-              <label>Email</label>
-              <Field name="email" type="email" />
-              <ErrorMessage name="email" component="div" style={{ color: "red" }} />
+              <label>Username</label>
+              <Field name="username" type="text" />
+              <ErrorMessage name="username" component="div" style={{ color: "red" }} />
             </div>
 
             <div>
