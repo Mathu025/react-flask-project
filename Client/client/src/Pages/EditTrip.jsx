@@ -8,7 +8,7 @@ function EditTrip() {
     destination: "",
     start_date: "",
     end_date: "",
-    description: ""
+    details: ""
   });
 
   useEffect(() => {
@@ -25,11 +25,12 @@ function EditTrip() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`http://127.0.0.1:5555/trips/${id}`, {
+       const res = await fetch(`http://127.0.0.1:5555/trips/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+      if (!res.ok) throw new Error("Failed to update trip");
       navigate(`/trips/${id}`);
     } catch (err) {
       console.error("Error updating trip:", err);
@@ -60,9 +61,9 @@ function EditTrip() {
           onChange={handleChange}
         />
         <textarea
-          name="description"
-          placeholder="Description"
-          value={formData.description}
+          name="details"
+          placeholder="Trip Details"
+          value={formData.details}
           onChange={handleChange}
         />
         <button type="submit">Update Trip</button>

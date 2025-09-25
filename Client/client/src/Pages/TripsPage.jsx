@@ -1,18 +1,25 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function TripsPage() {
+export default function TripsPage() {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth(); // get logged-in user
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5555/trips")
-      .then(res => res.json())
-      .then(data => {
+    async function fetchTrips() {
+      try {
+        const res = await fetch("http://127.0.0.1:5555/trips");
+        const data = await res.json();
         setTrips(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
         setLoading(false);
-      })
-      .catch(err => console.error(err));
+      }
+    }
+    fetchTrips();
   }, []);
 
   const handleDelete = async (id) => {
@@ -22,6 +29,28 @@ function TripsPage() {
       setTrips(trips.filter(trip => trip.id !== id));
     } catch (err) {
       console.error("Error deleting trip:", err);
+    }
+  };
+
+  const handleJoin = async (tripId) => {
+    if (!user) {
+      alert("You must be logged in to join a trip.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://127.0.0.1:5555/trips/${tripId}/join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.id }),
+      });
+      if (!res.ok) throw new Error("Failed to join trip");
+
+      alert("You have successfully joined the trip!");
+      // optionally update trips or reload the list
+    } catch (err) {
+      console.error(err);
+      alert("Error joining trip.");
     }
   };
 
@@ -37,7 +66,10 @@ function TripsPage() {
           {trips.map(trip => (
             <li key={trip.id}>
               <Link to={`/trips/${trip.id}`}>{trip.destination}</Link>{" "}
-              <button onClick={() => handleDelete(trip.id)}>Delete</button>
+              <button onClick={() => handleDelete(trip.id)}>Delete</button>{" "}
+              <button onClick={() => handleJoin(trip.id)}>
+                {user && trip.users?.includes(user.id) ? "Joined" : "Join"}
+              </button>
             </li>
           ))}
         </ul>
@@ -45,5 +77,3 @@ function TripsPage() {
     </div>
   );
 }
-
-export default TripsPage;
