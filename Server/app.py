@@ -172,7 +172,12 @@ class TripResourceById(Resource):
     def patch(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
         if not trip:
-            return {'error': 'Trip not found'}, 404
+            message_body={
+                'error': 'Trip not found'
+            }
+            response=make_response(message_body, 404)
+            return response
+        
         data = request.json
         if 'destination' in data:
             trip.destination = data['destination']
