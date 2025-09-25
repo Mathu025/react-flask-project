@@ -9,7 +9,8 @@ function NavBar() {
                 <Link to="/trips">Trips</Link>
                 <Link to="/my-groups">My Groups</Link>
                 <Link to="/users">Users</Link>
-                <Link to="/profile">Profile</Link>
+                <Link to="/signup">Profile</Link>
+                <Link to="/login">Login</Link>
             </div>
         </nav>
     );

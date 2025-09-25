@@ -8,6 +8,7 @@ import MyGroupsPage from "./Pages/MyGroupsPage";
 import UsersPage from "./Pages/UsersPage";
 import ProfilePage from "./Pages/ProfilePage";  
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Login from "./Pages/Login";    
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
           <Route path="/trips/:id/edit" element={<ProtectedRoute><EditTrip /> </ProtectedRoute>} />
           <Route path="/my-groups" element={<ProtectedRoute> <MyGroupsPage /> </ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><UsersPage /> </ProtectedRoute>} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/signup" element={<ProfilePage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
       </div>
