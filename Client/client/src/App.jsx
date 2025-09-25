@@ -24,6 +24,7 @@ function App() {
           <Route path="/users" element={<ProtectedRoute><UsersPage /> </ProtectedRoute>} />
           <Route path="/signup" element={<ProfilePage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<h2>Logout</h2>} />
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
       </div>

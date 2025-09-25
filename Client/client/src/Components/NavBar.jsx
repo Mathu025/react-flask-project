@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import "./NavBar.css";
+import LogoutButton from "../Pages/Logout";
 
 function NavBar() {
     return (
@@ -12,6 +13,7 @@ function NavBar() {
                 <NavLink to="/users">Users</NavLink>
                 <NavLink to="/signup">SignUp</NavLink>
                 <NavLink to="/login">Login</NavLink>
+                <LogoutButton />
             </div>
         </nav>
     );

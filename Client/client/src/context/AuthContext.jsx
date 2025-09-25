@@ -41,7 +41,6 @@ export function AuthProvider({ children }) {
 
   async function signup(userData) {
     const res = await apiSignup(userData);
-    // backends vary: could return { token, user } or user.
     if (res.token) {
       localStorage.setItem("auth_token", res.token);
       setToken(res.token);
@@ -50,7 +49,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem("auth_user", JSON.stringify(res.user));
       setUser(res.user);
     } else if (!res.token && res.id) {
-      // If backend returned user object w/o token:
       localStorage.setItem("auth_user", JSON.stringify(res));
       setUser(res);
     }
