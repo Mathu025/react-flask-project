@@ -136,22 +136,26 @@ class TripResource(Resource):
         return response
 
     def post(self):
-        data = request.get_json()
-        new_trip = Trip(
-            destination=data['destination'],
-            start_date=data['start_date'],
-            end_date=data['end_date'],
-            details=data['details'],
-            user_id=data.get('user_id')
-        )
+        try:
+            data = request.get_json()
+            new_trip = Trip(
+                destination=data['destination'],
+                start_date=datetime.strptime(data['start_date'], "%Y-%m-%d").date(),
+                end_date=datetime.strptime(data['end_date'], "%Y-%m-%d").date(),
+                details=data['details'],
+                user_id=data.get('user_id')
+            )
 
 
-        db.session.add(new_trip)
-        db.session.commit()
+            db.session.add(new_trip)
+            db.session.commit()
         
-        new_trip_dict=new_trip.to_dict()
-        response=make_response(new_trip_dict, 201)
-        return response
+            new_trip_dict=new_trip.to_dict()
+            response=make_response(new_trip_dict, 201)
+            return response
+        except ValueError as e:
+            return {'error': f'Invalid date format. Use YYYY-MM-DD: Error: {str(e)}'}, 400
+
 class TripResourceById(Resource):
     def get(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
