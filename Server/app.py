@@ -48,6 +48,7 @@ class Signup(Resource):
         return response
 class Login(Resource):
     def post(self):
+        
         data=request.get_json()
         email=data['email']
         password=data['password']
@@ -67,6 +68,8 @@ class Logout(Resource):
 
 class UserResource(Resource):
     def get(self):
+        
+        
         users=[user.to_dict() for user in User.query.all()]
         response=make_response(users, 200)
         return response
@@ -131,6 +134,8 @@ class UserResourceById(Resource):
 
 class TripResource(Resource):
     def get(self):
+        
+        
         trips=[trip.to_dict() for trip in Trip.query.all()]
         response=make_response(trips, 200)
         return response
@@ -159,8 +164,7 @@ class TripResource(Resource):
 class TripResourceById(Resource):
     def get(self, id):
         trip = Trip.query.filter(Trip.id==id).first()
-        if not trip:
-            return {'error': 'Trip not found'}, 404
+        
         trip_dict=trip.to_dict()
         response=make_response(trip_dict, 200)
         return response
@@ -301,7 +305,21 @@ class GroupMembershipById(Resource):
 
         db.session.commit()
         return make_response(gm.to_dict(), 200)
+    
+class JoinTrip(Resource):
+    def post(self, id):
+        user_id = request.json.get("user_id")  # or get from current_user.id
+        trip = Trip.query.get(id)
+        if not trip:
+            return {"error": "Trip not found"}, 404
 
+        if user_id in [u.id for u in trip.users]:
+            return {"message": "Already joined"}, 400
+
+        user = User.query.get(user_id)
+        trip.users.append(user)
+        db.session.commit()
+        return {"message": "Joined trip successfully", "trip_id": id}
 
 api.add_resource(Start, '/welcome')
 api.add_resource(UserResource, '/users')
@@ -315,6 +333,8 @@ api.add_resource(GroupMembershipById, '/groupmemberships/<int:id>')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
+api.add_resource(JoinTrip, '/trips/<int:id>/join')
+
 
 
 
