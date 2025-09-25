@@ -22,31 +22,31 @@ def seed_database():
                 name="Alice Johnson", 
                 email="alice@example.com", 
                 role="user",
-                profile_pic="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+                profile_pic="https://plus.unsplash.com/premium_photo-1758365571222-568d44cbe933?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             ),
             User(
                 name="Bob Smith", 
                 email="bob@example.com", 
                 role="user",
-                profile_pic="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+                profile_pic="https://plus.unsplash.com/premium_photo-1664040392323-ac5909ade92a?q=80&w=722&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             ),
             User(
                 name="Carol Davis", 
                 email="carol@example.com", 
                 role="user",
-                profile_pic="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
+                profile_pic="https://images.unsplash.com/photo-1725653811863-8ca1776e126a?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             ),
             User(
                 name="David Wilson", 
                 email="david@example.com", 
                 role="user",
-                profile_pic="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+                profile_pic="https://images.unsplash.com/photo-1754769440490-2eb64d715775?q=80&w=1113&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             ),
             User(
                 name="Admin User", 
                 email="admin@travelbuddy.com", 
                 role="admin",
-                profile_pic="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face"
+                profile_pic="https://images.unsplash.com/photo-1758506971683-c080e6f16ce9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             )
         ]
         
