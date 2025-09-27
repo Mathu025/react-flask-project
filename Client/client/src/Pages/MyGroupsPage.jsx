@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";    
-import { fetchUsers } from "../api";
+import { fetchUsers, deleteGroup } from "../api";  
 import GroupCard from "../Components/GroupCard";
 
 function MyGroupsPage() {
@@ -25,6 +25,16 @@ function MyGroupsPage() {
         loadGroups();
     }, []);
 
+    async function handleDelete(id) {
+        if (!window.confirm("Are you sure you want to delete this trip?")) return;
+        try {
+            await deleteGroup(id); 
+            setMyTrips(myTrips.filter(trip => trip.id !== id)); 
+        } catch (err) {
+            alert("Failed to delete trip: " + err.message);
+        }
+    }
+
     if (loading) return <p>Loading your groups...</p>;
     if (error) return <p>Error: {error}</p>;
 
@@ -34,11 +44,14 @@ function MyGroupsPage() {
             {myTrips.length === 0 ? (
                 <p>You are not part of any travel groups.</p>
             ) : (
-                    myTrips.map(trip => (
-                        <GroupCard key={trip.id} trip={trip} /> )
-                    ))}
-        </div>      
-
+                myTrips.map(trip => (
+                    <div key={trip.id}>
+                        <GroupCard trip={trip} />
+                        <button onClick={() => handleDelete(trip.id)}>Delete</button>
+                    </div>
+                ))
+            )}
+        </div>
     );
 }
 

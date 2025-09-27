@@ -51,7 +51,6 @@ export async function createTrip(tripData) {
     }
 }
 
-// --- USERS ---
 export async function fetchUsers() {
     const res = await fetch(`${API_URL}/users`);
     if (!res.ok) throw new Error("Failed to fetch users");
@@ -74,7 +73,6 @@ export async function createUser(userData) {
     return res.json();
 }
 
-// --- GROUPS ---
 export async function fetchGroups() {
     const res = await fetch(`${API_URL}/travelgroups`);
     if (!res.ok) throw new Error("Failed to fetch groups");
@@ -121,41 +119,57 @@ export async function deleteMembership(id) {
     return res.json();
 }
 
-// --- AUTH ---
-export async function signup(userData) {
-  const res = await fetch(`${API_URL}/signup`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(userData),
-  });
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(errText || "Failed to sign up");
-  }
-  return res.json();
+
+    export async function signup(userData) {
+    const res = await fetch(`${API_URL}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+    });
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Failed to sign up");
+    }
+    return res.json();
+    }
+
+    export async function login(credentials) {
+    const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+    });
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Failed to login");
+    }
+    return res.json();
+    }
+
+    export async function fetchCurrentUser(tokenOrNothing) {
+    const res = await fetch(`${API_URL}/me`, {
+        headers: tokenOrNothing
+        ? { Authorization: `Bearer ${tokenOrNothing}` }
+        : undefined,
+    });
+    if (!res.ok) {
+        throw new Error("Failed to fetch current user");
+    }
+    return res.json();
+    }
+
+    export async function deleteTrip(id) {
+    const res = await fetch(`${API_URL}/trips/${id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete trip");
+    return true;
 }
 
-export async function login(credentials) {
-  const res = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials),
-  });
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(errText || "Failed to login");
-  }
-  return res.json();
-}
-
-export async function fetchCurrentUser(tokenOrNothing) {
-  const res = await fetch(`${API_URL}/me`, {
-    headers: tokenOrNothing
-      ? { Authorization: `Bearer ${tokenOrNothing}` }
-      : undefined,
-  });
-  if (!res.ok) {
-    throw new Error("Failed to fetch current user");
-  }
-  return res.json();
+export async function deleteGroup(id) {
+    const res = await fetch(`${API_URL}/trips/${id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete trip");
+    return true;
 }
