@@ -25,6 +25,7 @@ function UsersPage() {
         try {
             await deleteUser(id);
             setUsers(users.filter(user => user.id !== id)); 
+            alert("User deleted successfully!")
         } catch (err) {
             alert("Failed to delete user: " + err.message);
         }
