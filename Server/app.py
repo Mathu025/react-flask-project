@@ -260,9 +260,14 @@ class TravelGroupResourceById(Resource):
         return response
 
     def delete(self, id):
-        travelgroup = TravelGroup.query.get(id)
+        travelgroup = TravelGroup.query.filter(TravelGroup.id==id).first()
         if not travelgroup:
-            return {"error": "TravelGroup not found"}, 404
+            message_body={
+                "error": "TravelGroup not found"
+
+            }
+            response=make_response(message_body, 404)
+            return response
 
         db.session.delete(travelgroup)
         db.session.commit()
