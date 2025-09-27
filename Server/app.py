@@ -13,7 +13,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SECRET_KEY"]="super_secret"
 app.json.compact = False
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app, resources={r"/*": {
+    "origins": "http://localhost:5173",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]
+}})
 
 
 
@@ -118,19 +122,38 @@ class UserResourceById(Resource):
         return response
 
     def delete(self, id):
-        user = User.query.filter(User.id==id).first()
-        if not user:
-            return {"error": "User not found"}, 404
+        try:
+            user = User.query.filter(User.id == id).first()
+            if not user:
+                return {"error": "User not found"}, 404
 
-        
-        db.session.delete(user)
-        db.session.commit()
-        response_body={
-            "message": "User deleted successfully"
-        }
             
-        response=make_response(response_body, 204)
-        return response
+            try:
+                # Delete user's trips
+                trips = Trip.query.filter_by(user_id=id).all()
+                for trip in trips:
+                    db.session.delete(trip)
+                
+                # Delete user's group memberships
+                memberships = GroupMembership.query.filter_by(user_id=id).all()
+                for membership in memberships:
+                    db.session.delete(membership)
+                
+                db.session.flush()  # Check for errors
+            except Exception as e:
+                db.session.rollback()
+                return {"error": f"Failed to delete user's related records: {str(e)}"}, 500
+
+            # Now delete the user
+            db.session.delete(user)
+            db.session.commit()
+            
+            return {"message": "User deleted successfully"}, 200
+            
+        except Exception as e:
+            db.session.rollback()
+            return {"error": f"Database error: {str(e)}"}, 500
+        
 
 class TripResource(Resource):
     def get(self):
@@ -260,21 +283,31 @@ class TravelGroupResourceById(Resource):
         return response
 
     def delete(self, id):
-        travelgroup = TravelGroup.query.filter(TravelGroup.id==id).first()
-        if not travelgroup:
-            message_body={
-                "error": "TravelGroup not found"
+        try:
+            travelgroup = TravelGroup.query.filter(TravelGroup.id == id).first()
+            if not travelgroup:
+                return {"error": "TravelGroup not found"}, 404
 
-            }
-            response=make_response(message_body, 404)
-            return response
+            # Delete related memberships first with proper error handling
+            try:
+                memberships = GroupMembership.query.filter_by(group_id=id).all()
+                for membership in memberships:
+                    db.session.delete(membership)
+                db.session.flush()  # Flush to check for errors before commit
+            except Exception as e:
+                db.session.rollback()
+                return {"error": f"Failed to delete memberships: {str(e)}"}, 500
 
-        db.session.delete(travelgroup)
-        db.session.commit()
-
-        response_body = {"message": "TravelGroup deleted successfully"}
-        response = make_response(response_body, 200)
-        return response
+            # Now delete the travel group
+            db.session.delete(travelgroup)
+            db.session.commit()
+            
+            return {"message": "TravelGroup deleted successfully"}, 200
+            
+        except Exception as e:
+            db.session.rollback()
+            return {"error": f"Database error: {str(e)}"}, 500
+        
 
 class GroupMembershipResource(Resource):
     def get(self):

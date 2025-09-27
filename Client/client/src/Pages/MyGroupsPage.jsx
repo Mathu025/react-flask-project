@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";    
-import { fetchUsers, deleteGroup } from "../api";  
+import { fetchGroups, deleteGroup } from "../api";  
 import GroupCard from "../Components/GroupCard";
 
 function MyGroupsPage() {
-    const [myTrips, setMyTrips] = useState([]);
+    const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const currentUserId = 1;  
 
     useEffect(() => {
         async function loadGroups() {
             try {
-                const users = await fetchUsers();
-                const me = users.find(user => user.id === currentUserId);
-                setMyTrips(me?.trips || []);
+                const allGroups = await fetchGroups();
+                setGroups(allGroups);
             }                   
             catch (err) {
                 setError(err.message);
@@ -26,28 +23,32 @@ function MyGroupsPage() {
     }, []);
 
     async function handleDelete(id) {
-        if (!window.confirm("Are you sure you want to delete this trip?")) return;
+        if (!window.confirm("Are you sure you want to delete this group?")) return;
         try {
+            console.log("Starting delete for group ID:", id);
             await deleteGroup(id); 
-            setMyTrips(myTrips.filter(trip => trip.id !== id)); 
+            console.log("Delete successful, updating UI");
+            setGroups(groups.filter(group => group.id !== id)); 
+            alert("Group deleted successfully!")
         } catch (err) {
-            alert("Failed to delete trip: " + err.message);
+            console.error("Delete failed with error:", err);
+            alert("Failed to delete group: " + err.message);
         }
     }
 
-    if (loading) return <p>Loading your groups...</p>;
+    if (loading) return <p>Loading groups...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (
         <div>
-            <h2>My Travel Groups</h2>
-            {myTrips.length === 0 ? (
-                <p>You are not part of any travel groups.</p>
+            <h2>All Travel Groups</h2>
+            {groups.length === 0 ? (
+                <p>No travel groups found.</p>
             ) : (
-                myTrips.map(trip => (
-                    <div key={trip.id}>
-                        <GroupCard trip={trip} />
-                        <button onClick={() => handleDelete(trip.id)}>Delete</button>
+                groups.map(group => (
+                    <div key={group.id}>
+                        <GroupCard group={group} />
+                        <button onClick={() => handleDelete(group.id)}>Delete</button>
                     </div>
                 ))
             )}
