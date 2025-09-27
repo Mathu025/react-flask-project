@@ -1,9 +1,11 @@
-function GroupCard({trip}) {
+function GroupCard({group}) {
     return (
         <div>
-        <h3>{trip.destination}</h3>
-        <p>{trip.details}</p>
-        <p><strong>Dates:</strong>{trip.start_date}-{trip.end_date}</p>
+        <h3>Group Name: {group.group_name}</h3>
+        <p>Max-Numbers: {group.max_members}</p>
+        {group.trip && (
+                <p><strong>Trip:</strong> {group.trip.destination}</p>
+            )}
         </div>
     );
 }
