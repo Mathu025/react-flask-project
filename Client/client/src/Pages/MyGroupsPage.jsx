@@ -29,6 +29,7 @@ function MyGroupsPage() {
             await deleteGroup(id); 
             console.log("Delete successful, updating UI");
             setGroups(groups.filter(group => group.id !== id)); 
+            alert("Group deleted successfully!")
         } catch (err) {
             console.error("Delete failed with error:", err);
             alert("Failed to delete group: " + err.message);
