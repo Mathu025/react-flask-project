@@ -8,7 +8,7 @@ export default function TripForm({ onAddTrip }) {
         details: "",
         start_date: "",
         end_date: "",
-        user_id: "",
+
     });
 
     const [error, setError] = useState("");
@@ -20,7 +20,7 @@ export default function TripForm({ onAddTrip }) {
     }
 
     function validateForm() {
-        const { destination, details, start_date, end_date, user_id } = formData;
+        const { destination, details, start_date, end_date } = formData;
 
         if (!destination.trim()) return "Destination is required.";
         if (!details.trim()) return "Details are required.";
@@ -28,8 +28,7 @@ export default function TripForm({ onAddTrip }) {
         if (!end_date) return "End date is required.";
         if (new Date(start_date) > new Date(end_date))
             return "Start date cannot be after end date.";
-        if (!user_id) return "User ID is required.";
-        if (isNaN(user_id)) return "User ID must be a number.";
+    
 
         return null;
     }
@@ -47,17 +46,19 @@ export default function TripForm({ onAddTrip }) {
 
         try {
         const newTrip = await createTrip(formData);
-        onAddTrip(newTrip); 
+        /*onAddTrip(newTrip); */
         setSuccess("Trip created successfully!");
         setFormData({
             destination: "",
             details: "",
             start_date: "",
             end_date: "",
-            user_id: "",
+
         });
         } 
-        catch (err) { setError("Failed to create trip. Please try again."); }    
+        catch (err) {
+            console.error("Full error object:", err);
+            setError("Failed to create trip. Please try again."); }    
     }
 
     return (
@@ -104,14 +105,7 @@ export default function TripForm({ onAddTrip }) {
         />
         <br />
 
-        <label>User ID: </label>
-        <input
-            type="number"
-            name="user_id"
-            placeholder="User ID"
-            value={formData.user_id}
-            onChange={handleChange}
-        />
+       
         <br />
 
         <button type="submit">Add Trip</button>
