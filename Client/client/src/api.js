@@ -167,11 +167,28 @@ export async function deleteMembership(id) {
 }
 
 export async function deleteGroup(id) {
-    const res = await fetch(`${API_URL}/trips/${id}`, {
-        method: "DELETE",
-    });
-    if (!res.ok) throw new Error("Failed to delete trip");
-    return true;
+    console.log("Attempting to delete group with ID:", id);
+    
+    try {
+        const res = await fetch(`${API_URL}/travelgroups/${id}`, {
+            method: "DELETE",
+        });
+        
+        console.log("Response status:", res.status);
+        console.log("Response ok:", res.ok);
+        
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error("Error response:", errorText);
+            throw new Error(`Failed to delete group: ${res.status} ${errorText}`);
+        }
+        
+        console.log("Group deleted successfully");
+        return true;
+    } catch (error) {
+        console.error("Delete group error:", error);
+        throw error;
+    }
 }
 
     export async function deleteUser(id) {

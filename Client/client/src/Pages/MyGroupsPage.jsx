@@ -25,9 +25,12 @@ function MyGroupsPage() {
     async function handleDelete(id) {
         if (!window.confirm("Are you sure you want to delete this group?")) return;
         try {
+            console.log("Starting delete for group ID:", id);
             await deleteGroup(id); 
+            console.log("Delete successful, updating UI");
             setGroups(groups.filter(group => group.id !== id)); 
         } catch (err) {
+            console.error("Delete failed with error:", err);
             alert("Failed to delete group: " + err.message);
         }
     }
