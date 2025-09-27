@@ -101,7 +101,11 @@ class TravelGroup(db.Model, SerializerMixin):
     #Add
     trip_id=db.Column(db.Integer, db.ForeignKey('trips.id'))
     trip=db.relationship('Trip', back_populates="travelgroups")
-    group_memberships = db.relationship('GroupMembership', back_populates='travelgroup')
+    group_memberships = db.relationship(
+        'GroupMembership', 
+        back_populates='travelgroup',
+        cascade='all, delete-orphan'  # Add this for automatic deletion
+    )
 
     users=association_proxy("group_memberships", "user", 
                                    creator=lambda user_obj: GroupMembership(user=user_obj))
