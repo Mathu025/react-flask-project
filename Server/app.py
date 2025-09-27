@@ -318,18 +318,44 @@ class GroupMembershipById(Resource):
     
 class JoinTrip(Resource):
     def post(self, id):
-        user_id = request.json.get("user_id")  # or get from current_user.id
+        user_id = request.json.get("user_id")
         trip = Trip.query.get(id)
         if not trip:
             return {"error": "Trip not found"}, 404
 
-        if user_id in [u.id for u in trip.users]:
-            return {"message": "Already joined"}, 400
+        travelgroup = TravelGroup.query.filter_by(trip_id=id).first()
+        if not travelgroup:
+            travelgroup = TravelGroup(
+                group_name=f"{trip.destination} Group",
+                trip_id=id,
+                max_members=10  # default limit
+            )
+            db.session.add(travelgroup)
+            db.session.commit()
 
-        user = User.query.get(user_id)
-        trip.users.append(user)
+        existing = GroupMembership.query.filter_by(
+            user_id=user_id,
+            group_id=travelgroup.id
+        ).first()
+
+        if existing:
+            return {"message": "Already joined this trip"}, 400
+
+        member_count = GroupMembership.query.filter_by(group_id=travelgroup.id).count()
+        if travelgroup.max_members and member_count >= travelgroup.max_members:
+            return {"error": "Group is full"}, 400
+
+        gm = GroupMembership(user_id=user_id, group_id=travelgroup.id, is_active=True)
+        db.session.add(gm)
         db.session.commit()
-        return {"message": "Joined trip successfully", "trip_id": id}
+
+        return {
+            "message": "Joined trip successfully",
+            "trip_id": trip.id,
+            "group_id": travelgroup.id,
+            "user_id": user_id
+        }, 201
+
 
 api.add_resource(Start, '/welcome')
 api.add_resource(UserResource, '/users')
