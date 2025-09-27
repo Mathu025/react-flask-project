@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NavBar from "./Components/NavBar";
+import HomePage from "./Pages/HomePage";
+import TripsPage from "./Pages/TripsPage";
+import TripDetails from "./Pages/TripDetails";
+import EditTrip from "./Pages/EditTrip";
+import MyGroupsPage from "./Pages/MyGroupsPage";
+import UsersPage from "./Pages/UsersPage";
+import ProfilePage from "./Pages/ProfilePage";  
+import ProtectedRoute from "./Components/ProtectedRoute";
+import Login from "./Pages/Login";  
+import TripForm from "./Components/TripForm";  
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <NavBar />
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/trips" element={<ProtectedRoute> <TripsPage /> </ProtectedRoute>} />
+          <Route path="/trips/:id" element={<ProtectedRoute> <TripDetails /> </ProtectedRoute>} />
+          <Route path="/trips/:id/edit" element={<ProtectedRoute><EditTrip /> </ProtectedRoute>} />
+          <Route path="/my-groups" element={<ProtectedRoute> <MyGroupsPage /> </ProtectedRoute>} />
+          <Route path="/users" element={<ProtectedRoute><UsersPage /> </ProtectedRoute>} />
+          <Route path="/signup" element={<ProfilePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<h2>Logout</h2>} />
+          <Route path="/trips/new" element={<ProtectedRoute><TripForm /></ProtectedRoute>} />
+          <Route path="*" element={<h2>404 Not Found</h2>} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
