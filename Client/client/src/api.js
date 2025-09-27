@@ -173,3 +173,12 @@ export async function deleteGroup(id) {
     if (!res.ok) throw new Error("Failed to delete trip");
     return true;
 }
+
+    export async function deleteUser(id) {
+    const res = await fetch(`${API_URL}/users/${id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete user");
+    return true;
+    }
+

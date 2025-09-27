@@ -104,6 +104,7 @@ export default function TripForm({ onAddTrip }) {
         />
         <br />
 
+        <label>User ID: </label>
         <input
             type="number"
             name="user_id"
