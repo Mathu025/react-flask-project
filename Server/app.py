@@ -122,19 +122,38 @@ class UserResourceById(Resource):
         return response
 
     def delete(self, id):
-        user = User.query.filter(User.id==id).first()
-        if not user:
-            return {"error": "User not found"}, 404
+        try:
+            user = User.query.filter(User.id == id).first()
+            if not user:
+                return {"error": "User not found"}, 404
 
-        
-        db.session.delete(user)
-        db.session.commit()
-        response_body={
-            "message": "User deleted successfully"
-        }
             
-        response=make_response(response_body, 204)
-        return response
+            try:
+                # Delete user's trips
+                trips = Trip.query.filter_by(user_id=id).all()
+                for trip in trips:
+                    db.session.delete(trip)
+                
+                # Delete user's group memberships
+                memberships = GroupMembership.query.filter_by(user_id=id).all()
+                for membership in memberships:
+                    db.session.delete(membership)
+                
+                db.session.flush()  # Check for errors
+            except Exception as e:
+                db.session.rollback()
+                return {"error": f"Failed to delete user's related records: {str(e)}"}, 500
+
+            # Now delete the user
+            db.session.delete(user)
+            db.session.commit()
+            
+            return {"message": "User deleted successfully"}, 200
+            
+        except Exception as e:
+            db.session.rollback()
+            return {"error": f"Database error: {str(e)}"}, 500
+        
 
 class TripResource(Resource):
     def get(self):
