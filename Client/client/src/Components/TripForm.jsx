@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createTrip } from "../api";
+import "./TripForm.css";
 
 export default function TripForm({ onAddTrip }) {
     const [formData, setFormData] = useState({
@@ -60,12 +61,13 @@ export default function TripForm({ onAddTrip }) {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="tripform" onSubmit={handleSubmit}>
         <h2>Create a New Trip</h2>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
         {success && <p style={{ color: "green" }}>{success}</p>}
 
+        <label>Destination</label>
         <input
             type="text"
             name="destination"
@@ -75,6 +77,7 @@ export default function TripForm({ onAddTrip }) {
         />
         <br />
 
+        <label>Details</label>
         <textarea
             name="details"
             placeholder="Trip Details"
