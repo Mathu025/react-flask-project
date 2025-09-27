@@ -8,7 +8,8 @@ import MyGroupsPage from "./Pages/MyGroupsPage";
 import UsersPage from "./Pages/UsersPage";
 import ProfilePage from "./Pages/ProfilePage";  
 import ProtectedRoute from "./Components/ProtectedRoute";
-import Login from "./Pages/Login";    
+import Login from "./Pages/Login";  
+import TripForm from "./Components/TripForm";  
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/signup" element={<ProfilePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<h2>Logout</h2>} />
+          <Route path="/trips/new" element={<ProtectedRoute><TripForm /></ProtectedRoute>} />
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
       </div>

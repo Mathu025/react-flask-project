@@ -13,6 +13,7 @@ function NavBar() {
                 <NavLink to="/users">Users</NavLink>
                 <NavLink to="/signup">SignUp</NavLink>
                 <NavLink to="/login">Login</NavLink>
+                <NavLink to="/trips/new">New Trip</NavLink>
                 <LogoutButton />
             </div>
         </nav>
