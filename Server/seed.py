@@ -2,10 +2,13 @@
 # server/seed.py
 # seed.py
 #!/usr/bin/env python3
+import os 
 
 from app import app, db
 from models import User, Trip, TravelGroup, GroupMembership
 from datetime import date
+from dotenv import load_dotenv
+load_dotenv()
 
 def seed_database():
     with app.app_context():

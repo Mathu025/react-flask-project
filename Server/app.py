@@ -3,12 +3,15 @@ from flask import Flask, jsonify, request, make_response, session
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_cors import CORS
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from models import db, User, Trip,TravelGroup, GroupMembership
 
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///travelbuddy.db'
+app = Flask(__name__, static_folder='../client/build')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SECRET_KEY"]="super_secret"
 app.json.compact = False
@@ -24,6 +27,14 @@ CORS(app, resources={r"/*": {
 db.init_app(app)
 migrate = Migrate(app, db)
 api = Api(app)
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 
 class Start(Resource):
