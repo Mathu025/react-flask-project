@@ -13,6 +13,7 @@ faker = "*"
 flask-bcrypt = "*"
 flask-restful = "*"
 flask-migrate = "*"
+gunicorn = "*"
 
 [dev-packages]
 
