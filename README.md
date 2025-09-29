@@ -193,6 +193,7 @@ DELETE /groupmembership/<id> – Delete a groupmemberships
 For production, deploy to Render
 
 Deployment link = "https://react-flask-project-5.onrender.com/"
+
 Backend link using gunicorn = "http://127.0.0.1:8000/" (/users, /trips, /travelgroups)
 
 ---
