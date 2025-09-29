@@ -1,0 +1,22 @@
+import { NavLink } from "react-router-dom";
+import "./NavBar.css";
+import LogoutButton from "../Pages/Logout";
+
+function NavBar() {
+    return (
+        <nav className="navbar">
+            <h1>Travel Buddy</h1>
+            <div className="links">
+                <NavLink to="/">Home</NavLink>
+                <NavLink to="/trips">Trips</NavLink>
+                <NavLink to="/my-groups">My Groups</NavLink>
+                <NavLink to="/users">Users</NavLink>
+                <NavLink to="/signup">SignUp</NavLink>
+                <NavLink to="/login">Login</NavLink>
+                <NavLink to="/trips/new">New Trip</NavLink>
+                <LogoutButton />
+            </div>
+        </nav>
+    );
+}
+export default NavBar;
