@@ -10,7 +10,7 @@ export default function TripsPage() {
     useEffect(() => {
         async function fetchTrips() {
         try {
-            const res = await fetch("http://127.0.0.1:5555/trips");
+            const res = await fetch("/trips");
             const data = await res.json();
             setTrips(data);
         } catch (err) {
@@ -25,7 +25,7 @@ export default function TripsPage() {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this trip?")) return;
         try {
-            await fetch(`http://127.0.0.1:5555/trips/${id}`, { method: "DELETE" });
+            await fetch(`/trips/${id}`, { method: "DELETE" });
             setTrips(trips.filter(trip => trip.id !== id));
             alert("Trip deleted successfully!")
         } catch (err) {
@@ -40,7 +40,7 @@ export default function TripsPage() {
         }
 
         try {
-        const res = await fetch(`http://127.0.0.1:5555/trips/${tripId}/join`, {
+        const res = await fetch(`/trips/${tripId}/join`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ user_id: user.id }),

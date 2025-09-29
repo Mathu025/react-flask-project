@@ -1,15 +1,13 @@
 
 
-const API_URL = "http://127.0.0.1:5555";
-
 export async function fetchTrips() {
-    const res = await fetch(`${API_URL}/trips`);
+    const res = await fetch(`/trips`);
     if (!res.ok) throw new Error("Failed to fetch trips");
     return res.json();
 }
 
 export async function fetchTripById(id) {
-    const res = await fetch(`${API_URL}/trips/${id}`);
+    const res = await fetch(`/trips/${id}`);
     if (!res.ok) throw new Error("Failed to fetch trip");
     return res.json();
 }
@@ -17,7 +15,7 @@ export async function fetchTripById(id) {
 export async function createTrip(tripData) {
     console.log("Sending trip data:", tripData); // Debug log
     
-    const res = await fetch(`${API_URL}/trips`, {
+    const res = await fetch(`/trips`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(tripData),
@@ -52,19 +50,19 @@ export async function createTrip(tripData) {
 }
 
 export async function fetchUsers() {
-    const res = await fetch(`${API_URL}/users`);
+    const res = await fetch(`/users`);
     if (!res.ok) throw new Error("Failed to fetch users");
     return res.json();
 }
 
 export async function fetchUserById(id) {
-    const res = await fetch(`${API_URL}/users/${id}`);
+    const res = await fetch(`users/${id}`);
     if (!res.ok) throw new Error("Failed to fetch user");
     return res.json();
 }
 
 export async function createUser(userData) {
-    const res = await fetch(`${API_URL}/users`, {
+    const res = await fetch(`/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -74,19 +72,19 @@ export async function createUser(userData) {
 }
 
 export async function fetchGroups() {
-    const res = await fetch(`${API_URL}/travelgroups`);
+    const res = await fetch(`/travelgroups`);
     if (!res.ok) throw new Error("Failed to fetch groups");
     return res.json();
 }
 
 export async function fetchGroupById(id) {
-    const res = await fetch(`${API_URL}/travelgroups/${id}`);
+    const res = await fetch(`/travelgroups/${id}`);
     if (!res.ok) throw new Error("Failed to fetch group");
     return res.json();
 }
 
 export async function createGroup(groupData) {
-    const res = await fetch(`${API_URL}/travelgroups`, {
+    const res = await fetch(`/travelgroups`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(groupData),
@@ -96,13 +94,13 @@ export async function createGroup(groupData) {
 }
 
 export async function fetchMemberships() {
-    const res = await fetch(`${API_URL}/memberships`);
+    const res = await fetch(`/memberships`);
     if (!res.ok) throw new Error("Failed to fetch memberships");
     return res.json();
 }
 
 export async function createMembership(membershipData) {
-    const res = await fetch(`${API_URL}/memberships`, {
+    const res = await fetch(`/memberships`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(membershipData),
@@ -112,7 +110,7 @@ export async function createMembership(membershipData) {
 }
 
 export async function deleteMembership(id) {
-    const res = await fetch(`${API_URL}/memberships/${id}`, {
+    const res = await fetch(`/memberships/${id}`, {
         method: "DELETE",
     });
     if (!res.ok) throw new Error("Failed to leave group");
@@ -121,7 +119,7 @@ export async function deleteMembership(id) {
 
 
     export async function signup(userData) {
-    const res = await fetch(`${API_URL}/signup`, {
+    const res = await fetch(`/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -134,7 +132,7 @@ export async function deleteMembership(id) {
     }
 
     export async function login(credentials) {
-    const res = await fetch(`${API_URL}/login`, {
+    const res = await fetch(`/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -147,7 +145,7 @@ export async function deleteMembership(id) {
     }
 
     export async function fetchCurrentUser(tokenOrNothing) {
-    const res = await fetch(`${API_URL}/me`, {
+    const res = await fetch(`/me`, {
         headers: tokenOrNothing
         ? { Authorization: `Bearer ${tokenOrNothing}` }
         : undefined,
@@ -159,7 +157,7 @@ export async function deleteMembership(id) {
     }
 
     export async function deleteTrip(id) {
-    const res = await fetch(`${API_URL}/trips/${id}`, {
+    const res = await fetch(`/trips/${id}`, {
         method: "DELETE",
     });
     if (!res.ok) throw new Error("Failed to delete trip");
@@ -170,7 +168,7 @@ export async function deleteGroup(id) {
     console.log("Attempting to delete group with ID:", id);
     
     try {
-        const res = await fetch(`${API_URL}/travelgroups/${id}`, {
+        const res = await fetch(`/travelgroups/${id}`, {
             method: "DELETE",
         });
         
@@ -192,7 +190,7 @@ export async function deleteGroup(id) {
 }
 
     export async function deleteUser(id) {
-    const res = await fetch(`${API_URL}/users/${id}`, {
+    const res = await fetch(`/users/${id}`, {
         method: "DELETE",
     });
     if (!res.ok) throw new Error("Failed to delete user");

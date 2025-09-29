@@ -12,7 +12,7 @@
     });
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5555/trips/${id}`)
+        fetch(`/trips/${id}`)
         .then(res => res.json())
         .then(data => setFormData(data))
         .catch(err => console.error(err));
@@ -25,7 +25,7 @@
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-        const res = await fetch(`http://127.0.0.1:5555/trips/${id}`, {
+        const res = await fetch(`/trips/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),

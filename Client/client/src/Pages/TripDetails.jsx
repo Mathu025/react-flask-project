@@ -7,7 +7,7 @@
     const [trip, setTrip] = useState(null);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5555/trips/${id}`)
+        fetch(`/trips/${id}`)
         .then(res => res.json())
         .then(data => setTrip(data))
         .catch(err => console.error(err));
