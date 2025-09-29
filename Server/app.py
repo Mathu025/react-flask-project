@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, jsonify, request, make_response, session
+from flask import Flask, jsonify, request, make_response, session, send_from_directory
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_cors import CORS
