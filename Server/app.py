@@ -10,7 +10,7 @@ load_dotenv()
 from models import db, User, Trip,TravelGroup, GroupMembership
 
 
-app = Flask(__name__, static_folder='../client/build')
+app = Flask(__name__, static_folder='../Client/client/dist', static_url_path='/')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SECRET_KEY"]="super_secret"
@@ -28,13 +28,22 @@ db.init_app(app)
 migrate = Migrate(app, db)
 api = Api(app)
 
-@app.route('/', defaults={'path': ''})
+@app.route('/')
+def serve_react_app():
+    return send_from_directory(app.static_folder, 'index.html')
+
 @app.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
+def serve_static_files(path):
+    if os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
+
+
+@app.route('/api/health')
+def health_check():
+    return {'status': 'healthy'}
+
 
 
 class Start(Resource):
